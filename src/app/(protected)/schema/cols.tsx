@@ -20,6 +20,7 @@ export const applicationListCols = () => {
       accessorKey: "avatar",
       cell: ({ row }: { row: any }) => {
         const profile = row.original.avatar;
+        const name = row.original.fullName;
         return profile ? (
       <Image
             src={profile}
