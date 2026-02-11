@@ -57,6 +57,7 @@ const LoginPage = () => {
         setAuth({
           email: data.user.email,
           userId: data.user.userId,
+          referralCode: data.user.referralCode,
         });
 
         if (data.isPasswordChanged === false && data.isNewUser === true) {
