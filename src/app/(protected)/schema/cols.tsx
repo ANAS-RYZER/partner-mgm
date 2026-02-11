@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import Image from "next/image";
@@ -24,8 +23,9 @@ export const applicationListCols = () => {
         return profile ? (
       <Image
             src={profile}
-            alt={name}
+            alt= {"name"}
             width={40}
+
             height={40}
             className="rounded-full object-cover"
           />
