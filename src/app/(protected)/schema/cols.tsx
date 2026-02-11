@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import Image from "next/image";

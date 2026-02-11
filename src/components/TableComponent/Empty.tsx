@@ -1,6 +1,7 @@
+"use client";
 import React from "react";
 import { Button } from "../ui/button";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 interface EmptyProps {
   title: string; // Title to display
@@ -18,11 +19,11 @@ const Empty: React.FC<EmptyProps> = ({
   icon,
   actionButton,
 }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   
   const handleButtonClick = () => {
     if (actionButton?.location) {
-      navigate(actionButton.location);
+      router.push(actionButton.location);
     }
   };
   return (

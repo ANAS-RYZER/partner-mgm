@@ -2,7 +2,9 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import React from "react";
 
+
 const Header = () => {
+ 
   return (
     <div className="w-full h-20 bg-mgm text-white flex items-center px-6 shadow-md  justify-between">
       <h1 className="text-lg font-semibold text1-gold">Agent Dashboard</h1>
