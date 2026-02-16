@@ -11,7 +11,7 @@ export default function DashBoardLayout({
     <>
       <AuthWrapper>
       <Header />
-      <div className="min-h-screen w-screen flex">
+      <div className="min-h-screen w-full flex">
         <Sidebar />
         <main className="flex-1">{children}</main>
       </div>

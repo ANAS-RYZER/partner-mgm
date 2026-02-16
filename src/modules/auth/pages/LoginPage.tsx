@@ -34,6 +34,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginPage = () => {
   const router = useRouter();
+  
   const { mutate: login, isPending: isLoggingIn } = useLogin();
   const { mutate: sendOtp, isPending: isSendingOtp } = useSendOtp();
   const { setAuth } = useAuthStore();
@@ -57,6 +58,7 @@ const LoginPage = () => {
         setAuth({
           email: data.user.email,
           userId: data.user.userId,
+          referralCode: data.user.referralCode,
         });
 
         if (data.isPasswordChanged === false && data.isNewUser === true) {

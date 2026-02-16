@@ -1,5 +1,7 @@
 // src/mock/applications.ts
 
+import { Slot } from "@radix-ui/react-slot";
+
 export const mockApplications = [
   {
     id: "APP001",
@@ -9,6 +11,7 @@ export const mockApplications = [
     phone: "9876543210",
     status: "pending",
     createdAt: "2026-01-20",
+    Slot:"9:00 AM - 1:00 PM"
   },
   {
     id: "APP002",
@@ -18,6 +21,7 @@ export const mockApplications = [
     phone: "9123456789",
     status: "approved",
     createdAt: "2026-01-18",
+    Slot:"2:00 PM - 5:00 PM"
   },
   {
     id: "APP003",
@@ -27,6 +31,7 @@ export const mockApplications = [
     phone: "9988776655",
     status: "rejected",
     createdAt: "2026-01-15",
+    Slot:"2:00 PM - 5:00 PM"
   },
   {
     id: "APP004",
@@ -36,5 +41,6 @@ export const mockApplications = [
     phone: "9012345678",
     status: "pending",
     createdAt: "2026-01-10",
+     Slot:"6:00 PM - 9:00 PM"
   },
 ];
