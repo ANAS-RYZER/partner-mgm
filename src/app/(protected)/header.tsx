@@ -1,14 +1,21 @@
-'use client'
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { LogOut, Copy, Check } from "lucide-react";
 import React, { useState } from "react";
 import { useAuthStore } from "@/modules/auth/state/useAuthState";
-
+import { useRouter } from "next/navigation";
+import useGetMe from "@/modules/auth/hooks/useGetMe";
 
 const Header = () => {
-  const referralCode = useAuthStore((s) => s.referralCode);
+  const router = useRouter();
+  const { clearAuth } = useAuthStore();
+  const { data: me, isFetching: isMeFetching } = useGetMe();
   const [copied, setCopied] = useState(false);
+
+  const referralCode = me?.agentId;
+
+  console.log("Referral Code in Header:", referralCode);
 
   const handleCopy = async () => {
     if (!referralCode) return;
@@ -19,20 +26,21 @@ const Header = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleLogout = () => {
+    clearAuth();
+    router.push("/auth/login");
+  };
+
   return (
     <div className="w-full h-20 bg-mgm text-white flex items-center px-6 shadow-md justify-between">
-      <h1 className="text-lg font-semibold text1-gold">
-        Agent Dashboard
-      </h1>
+      <h1 className="text-lg font-semibold text1-gold">Partner Dashboard</h1>
 
       <div className="flex items-center gap-5">
         <div>
-          <p>Partner Referral ID</p>
+          <p>Partner ID</p>
 
           <div className="flex items-center gap-2">
-            <h1 className="font-semibold">
-              {referralCode ?? "—"}
-            </h1>
+            <h1 className="font-semibold">{referralCode ?? "—"}</h1>
 
             {referralCode && (
               <button
@@ -49,7 +57,7 @@ const Header = () => {
           </div>
         </div>
 
-        <Button className="bg-white/20 text-white">
+        <Button className="bg-white/20 text-white" onClick={handleLogout}>
           <LogOut className="w-4 h-4 mr-2" />
           Logout
         </Button>

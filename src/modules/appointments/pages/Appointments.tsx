@@ -6,23 +6,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, CheckCircle, Clock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { useCustomers } from "@/modules/auth/hooks/customers-details/useCustomers";
-import { mockApplications } from "@/app/(protected)/schema/applications";
-import { appointmentListCols } from "@/app/(protected)/schema/appointmentListCols";
+import { useAppointmentListCols } from "@/app/(protected)/schema/appointmentListCols";
+import useGetAppointments from "@/modules/appointments/hooks/useGetAppointments";
 
 function AppointmentsPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  //   const { data, isLoading, error } = useCustomers();
+  const {data, isLoading, error } = useGetAppointments();
 
-  //   const customers = data?.customers || [];
-  const cols = appointmentListCols();
+  const appointments = data?.data ?? [];
 
-  const data = mockApplications;
+  const cols = useAppointmentListCols();
 
-  //   const filteredCustomers = customers.filter((c:any) =>
-  //       c.email.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
+
+    const filteredCustomers = appointments.filter((c:any) =>
+        (c.applicantName ?? "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -39,7 +38,7 @@ function AppointmentsPage() {
               <FileText className="h-5 w-5 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">3</p>
+              <p className="text-2xl font-bold">{appointments.length}</p>
             </CardContent>
           </Card>
 
@@ -50,7 +49,7 @@ function AppointmentsPage() {
               <CheckCircle className="h-5 w-5 text-green-500" />
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">3</p>
+              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "CONFIRMED").length}</p>
             </CardContent>
           </Card>
 
@@ -61,7 +60,7 @@ function AppointmentsPage() {
               <Clock className="h-5 w-5 text-yellow-500" />
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">0</p>
+              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "PENDING").length}</p>
             </CardContent>
           </Card>
         </div>
@@ -77,15 +76,15 @@ function AppointmentsPage() {
         </div>
 
         <div className="rounded-xl bg-background">
-          {/* {isLoading ? (
+          {isLoading ? (
             <div className="flex items-center justify-center p-10">
               <LoaderCircle size={50} className="animate-spin text-gold" />
             </div>
           ) : error ? (
-            <div className="p-10 text-red-500">Failed to load customers</div>
-          ) : ( */}
-          <TableComponent columns={cols} data={data} model="Customer" />
-          {/* )} */}
+            <div className="p-10 text-red-500">Failed to load appointments</div>
+          ) : (
+          <TableComponent columns={cols} data={filteredCustomers} model="Appointment" />
+           )} 
         </div>
       </section>
     </>

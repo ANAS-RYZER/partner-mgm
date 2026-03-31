@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+import React, { use } from "react";
+import { usePathname } from "next/navigation";
 
 const sidebar_options = [
   { name: "Dashboard", link: "/dashboard" },
@@ -7,20 +9,34 @@ const sidebar_options = [
 ];
 
 const Sidebar = () => {
+  const pathname= usePathname();
   return (
     <aside className="w-[15%] min-h-screen bg-mgm text-white p-4">
       <nav>
         <ul>
-          {sidebar_options.map((option) => (
+          {sidebar_options.map((option) => {
+
+            const isActive = pathname === option.link||
+              pathname.startsWith(`${option.link}/`);
+             return (
+            
             <li key={option.name} className="mb-2">
               <a
                 href={option.link}
-                className="block px-3 py-2 rounded hover:bg-gray-700"
+                className={`block px-3 py-2 rounded transition-colors
+                    ${
+                      isActive
+                        ? "bg-mgm text-gold"
+                        : "text-white hover:bg-gray-700"
+                    }
+                  `}
               >
                 {option.name}
               </a>
             </li>
-          ))}
+             );
+          })}
+
         </ul>
       </nav>
     </aside>

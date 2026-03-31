@@ -13,7 +13,7 @@ type AuthState = {
   clearAuth: () => void;
   setHasHydrated: (hydrated: boolean) => void;
 };
-
+  
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
@@ -22,6 +22,7 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       hasHydrated: false,
       referralCode: null,
+      
 
       setAuth: ({ email, userId , referralCode }) =>
         set({
@@ -29,8 +30,9 @@ export const useAuthStore = create<AuthState>()(
           userId,
           isAuthenticated: true,
           referralCode,
+          
         }),
-
+       
       clearAuth: () =>
         set({
           email: null,

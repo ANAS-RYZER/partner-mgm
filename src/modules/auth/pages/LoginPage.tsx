@@ -89,7 +89,7 @@ const LoginPage = () => {
       <div className="bg-gold rounded-full p-3 mb-2">
         <Sparkle size={20} className="text1-gold fill-white" />
       </div>
-      <h1 className="font-semibold text-3xl text1-gold mb-6">Agent Login</h1>
+      <h1 className="font-semibold text-3xl text1-gold mb-6">Partner Login</h1>
 
       <Form {...form}>
         <form

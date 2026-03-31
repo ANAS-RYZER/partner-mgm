@@ -44,3 +44,24 @@ export const mockApplications = [
      Slot:"6:00 PM - 9:00 PM"
   },
 ];
+
+export const  products=[
+          {
+            type: "Gold",
+            name: "22k Gold Earrings",
+            image: "/earrings.jpg",
+            date: "April 20, 2024",
+            amount: "58,500",
+            status: "Paid",
+          },
+          {
+            type: "Jewelry",
+            name: "Gold Diamond Necklace",
+            image: "/necklace.jpg",
+            date: "April 15, 2024",
+            amount: "1,25,000",
+            status: "Paid",
+          },
+        ];
+
+        

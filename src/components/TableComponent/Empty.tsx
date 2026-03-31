@@ -20,11 +20,6 @@ const Empty: React.FC<EmptyProps> = ({
   actionButton,
 }) => {
   const router = useRouter();
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> abcfb9b9eacbcbf1a79ce77ab3ecdecb4f890961
   const handleButtonClick = () => {
     if (actionButton?.location) {
       router.push(actionButton.location);

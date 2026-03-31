@@ -4,10 +4,9 @@
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
 
 export type AppointmentRow = {
-  _id: string;
+  userId: string;
   applicantName: string;
   email: string;
   date: string;
@@ -17,13 +16,13 @@ export type AppointmentRow = {
   status: "CONFIRMED" | "PENDING" | "CANCELLED";
 };
 
-export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
+export const useCustomerAppointmentsListCols = (): ColumnDef<AppointmentRow>[] => {
   return [
     {
       header: "Appointment ID",
-      accessorKey: "_id",
+      accessorKey: "userId",
       cell: ({ row }) => {
-        const id = row.original._id;
+        const id = row.original.userId;
         return (
           <span className="font-mono text-xs">
             {id ? `APPT-${id.slice(-3).toUpperCase()}` : "-"}
@@ -43,7 +42,7 @@ export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
 
     {
       header: "Date",
-      accessorKey: "createdAt",
+      accessorKey: "date",
       cell: ({ row }) => (
         <span>{row.original.date}</span>
       ),
@@ -55,8 +54,9 @@ export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
       cell: ({ row }) => (
         <span>
          {row.original.slotStartTime
-          ? `${row.original.slotStartTime} - ${row.original.slotEndTime}`
-          : "-"}
+  ? `${row.original.slotStartTime} - ${row.original.slotEndTime}`
+  : "-"}
+
         </span>
       ),
     },
@@ -93,20 +93,15 @@ export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
     {
       header: "Actions",
       accessorKey: "action",
-      cell: ({ row }) => {
-        const router = useRouter();
-        const appointmentId = row.original._id;
-        return (  
+      cell: () => (
         <Button
           variant="ghost"
           size="sm"
           className="h-8 w-8 p-0 hover:bg-primary/10"
-           onClick={() => router.push(`/appointments/${appointmentId}`)}
         >
           <Eye className="h-4 w-4" />
         </Button>
-        );
+      ),
     },
-  }
   ];
 };

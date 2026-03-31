@@ -1,7 +1,7 @@
 import TableComponent from "@/components/TableComponent";
 import { Table } from "lucide-react";
 import React from "react";
-import AppointmentsPage from "@/components/Appoinments/Appointments";
+import AppointmentsPage from "@/modules/appointments/pages/Appointments";
 
 function Appointments() {
 
