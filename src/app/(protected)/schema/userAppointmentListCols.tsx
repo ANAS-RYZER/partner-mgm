@@ -4,27 +4,26 @@
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useRouter } from "next/navigation";
 import StatusBadge from "@/components/ui/statusbadge";
 
 export type AppointmentRow = {
-  _id: string;
-  userName: string;
+  userId: string;
+  applicantName: string;
   email: string;
   date: string;
   slotStartTime?: string;
   slotEndTime?: string;
-  productCount?: number;
+  noofOrders?: number;
   status: "CONFIRMED" | "PENDING" | "CANCELLED";
 };
 
-export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
+export const useCustomerAppointmentsListCols = (): ColumnDef<AppointmentRow>[] => {
   return [
     {
       header: "Appointment ID",
-      accessorKey: "_id",
+      accessorKey: "userId",
       cell: ({ row }) => {
-        const id = row.original._id;
+        const id = row.original.userId;
         return (
           <span className="font-mono text-xs">
             {id ? `APPT-${id.slice(-3).toUpperCase()}` : "-"}
@@ -37,14 +36,14 @@ export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
       header: "Customer Details",
       accessorKey: "profile",
       cell: ({ row }) => {
-        return <div className="flex flex-col"><span className="font-medium">{row.original.userName || "-"}</span>
+        return <div className="flex flex-col"><span className="font-medium">{row.original.applicantName || "-"}</span>
         <span className="text-xs">{row.original.email || "-"}</span></div>;
       },
     },
 
     {
       header: "Date",
-      accessorKey: "createdAt",
+      accessorKey: "date",
       cell: ({ row }) => (
         <span>{row.original.date}</span>
       ),
@@ -56,18 +55,19 @@ export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
       cell: ({ row }) => (
         <span>
          {row.original.slotStartTime
-          ? `${row.original.slotStartTime} - ${row.original.slotEndTime}`
-          : "-"}
+  ? `${row.original.slotStartTime} - ${row.original.slotEndTime}`
+  : "-"}
+
         </span>
       ),
     },
 
     {
-      header: "No of Products",
-      accessorKey: "productCount",
+      header: "no of orders",
+      accessorKey: "noofOrders",
       cell: ({ row }) => (
         <span>
-         {row.original.productCount ?? "-"}
+         {row.original.noofOrders ?? "-"}
         </span>
       ),
     },
@@ -88,20 +88,15 @@ export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
     {
       header: "Actions",
       accessorKey: "action",
-      cell: ({ row }) => {
-        const router = useRouter();
-        const appointmentId = row.original._id;
-        return (  
+      cell: () => (
         <Button
           variant="ghost"
           size="sm"
           className="h-8 w-8 p-0 hover:bg-primary/10"
-           onClick={() => router.push(`/appointments/${appointmentId}`)}
         >
           <Eye className="h-4 w-4" />
         </Button>
-        );
+      ),
     },
-  }
   ];
 };

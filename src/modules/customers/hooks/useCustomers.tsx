@@ -6,8 +6,10 @@ export const useCustomers = () => {
     queryKey: ["customers"],
     queryFn: async () => {
       const res = await api.get("/agent-dashboard/customers");
-      console.log("customers response", res);
       return res.data;
     },
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2, 
   });
 };
