@@ -23,6 +23,7 @@ function CustomersPage() {
   (c.email ?? "").toLowerCase().includes(searchTerm.toLowerCase())
 );
 
+
   return (
     <>
       <section className="space-y-6 p-5">

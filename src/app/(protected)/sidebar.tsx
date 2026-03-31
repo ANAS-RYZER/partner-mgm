@@ -1,5 +1,6 @@
 "use client";
-import React, { use } from "react";
+import React from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const sidebar_options = [
@@ -21,18 +22,18 @@ const Sidebar = () => {
              return (
             
             <li key={option.name} className="mb-2">
-              <a
+              <Link
                 href={option.link}
                 className={`block px-3 py-2 rounded transition-colors
                     ${
                       isActive
                         ? "bg-mgm text-gold"
-                        : "text-white hover:bg-gray-700"
+                        : "text-white hover:text-gold"
                     }
                   `}
               >
                 {option.name}
-              </a>
+              </Link>
             </li>
              );
           })}

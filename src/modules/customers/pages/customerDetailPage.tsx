@@ -36,11 +36,11 @@ export default function CustomerDetailsPage() {
     "appointments",
   );
 
-  const { data, isLoading, error } = useGetCustomerAppointmentDetails(
+  const { data, isFetching, error } = useGetCustomerAppointmentDetails(
     customerId as string,
   );
 
-  const { data: customerDetails } = useGetCustomerDetails(customerId as string);
+  const { data: customerDetails , isFetching: isCustomerDetailsFetching } = useGetCustomerDetails(customerId as string);
 
   const cols = productColumns;
 
@@ -71,9 +71,11 @@ const appointmentRows =
     noOfOrders: appointment.productIds?.length ?? 0,
   })) ?? [];
 
-
-
-  console.log("customer appointments", data);
+  if (isFetching && isCustomerDetailsFetching ) {
+    return <div className="flex items-center justify-center p-10 h-96">
+      <LoaderCircle size={50} className="animate-spin text-gold" />
+    </div>
+  }
 
   return (
     <>
@@ -83,7 +85,7 @@ const appointmentRows =
           Customer Details
         </div>
         <CustomerHeader
-          avatar={customerDetails?.user?.avatar ?? ""}
+          // avatar={customerDetails?.user?.avatar ?? ""}
           name={customerDetails?.user?.fullName ?? "-"}
           customerId={customerDetails?.user?._id ?? "-"}
           email={customerDetails?.user?.email ?? "-"}
@@ -117,7 +119,7 @@ const appointmentRows =
         </div>
 
         <div className="rounded-xl bg-background">
-          {isLoading ? (
+          {isFetching ? (
             <div className="flex items-center justify-center p-10">
               <LoaderCircle size={50} className="animate-spin text-gold" />
             </div>

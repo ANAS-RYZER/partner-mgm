@@ -6,23 +6,22 @@ import React, { useState } from "react";
 import { useAuthStore } from "@/modules/auth/state/useAuthState";
 import { useRouter } from "next/navigation";
 import useGetMe from "@/modules/auth/hooks/useGetMe";
+import { toast } from "sonner";
 
 const Header = () => {
   const router = useRouter();
   const { clearAuth } = useAuthStore();
-  const { data: me, isFetching: isMeFetching } = useGetMe();
+  const { data: me } = useGetMe();
   const [copied, setCopied] = useState(false);
 
   const referralCode = me?.agentId;
-
-  console.log("Referral Code in Header:", referralCode);
 
   const handleCopy = async () => {
     if (!referralCode) return;
 
     await navigator.clipboard.writeText(referralCode);
     setCopied(true);
-
+    toast.success("Referral code copied to clipboard");
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -37,10 +36,10 @@ const Header = () => {
 
       <div className="flex items-center gap-5">
         <div>
-          <p>Partner ID</p>
+          <p className="text-sm text-white/60">Partner ID</p>
 
           <div className="flex items-center gap-2">
-            <h1 className="font-semibold">{referralCode ?? "—"}</h1>
+            <h1 className="font-semibold text-sm">{referralCode ?? ""}</h1>
 
             {referralCode && (
               <button
@@ -50,7 +49,7 @@ const Header = () => {
                 {copied ? (
                   <Check className="w-4 h-4 text-green-400" />
                 ) : (
-                  <Copy className="w-4 h-4" />
+                  <Copy className="w-3 h-3" />
                 )}
               </button>
             )}

@@ -24,23 +24,12 @@ export const applicationListCols = () => {
       cell: ({ row }: { row: any }) => {
         const profile = row.original.avatar;
         const name = row.original.fullName;
+        console.log(profile);
 
         return (
           <div className="flex items-center gap-3">
-            {profile ? (
-              <Image
-                src={profile}
-                alt={name || "Profile"}
-                width={40}
-                height={40}
-                className="rounded-full object-cover"
-              />
-            ) : (
-              <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-xs">
-                N/A
-              </div>
-            )}
-
+           
+            {/* <Image src={profile} alt={name || "Profile"} width={40} height={40} className="rounded-full object-cover" /> */}
             <span className="font-medium text-sm ">{name || "-"}</span>
           </div>
         );
@@ -54,16 +43,6 @@ export const applicationListCols = () => {
         return <span>{row.original.email || "-"}</span>;
       },
     },
-    {
-      header: "Phone Number",
-      accessorKey: "phoneNumber",
-      cell: ({ row }: { row: any }) => {
-        return (
-          <span className="capitalize">{row.original.phoneNumber || "-"}</span>
-        );
-      },
-    },
-
     {
       header: "Actions",
       accessorKey: "action",

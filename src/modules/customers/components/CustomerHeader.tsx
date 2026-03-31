@@ -47,12 +47,11 @@ export default function CustomerHeader({
           {email}
         </div>
 
-        <div className="flex items-center  gap-5">
+        <div className="flex items-center  gap-2">
           <div className="flex items-center gap-2 text-black  text-md">
-            <Calendar className="text-gold/90" /> Account Created
+            Account Created :
           </div>
          <div className="flex items-center gap-2 text-md text-black">
-           <Calendar className="text-gold/90" size={20} />
           {createdAt}
          </div>
         </div>

@@ -4,6 +4,7 @@
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
+import StatusBadge from "@/components/ui/statusbadge";
 
 export type AppointmentRow = {
   userId: string;
@@ -77,14 +78,8 @@ export const useCustomerAppointmentsListCols = (): ColumnDef<AppointmentRow>[] =
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <span
-            className={`px-2 py-1 rounded text-xs font-medium ${
-              status === "CONFIRMED"
-                ? "bg-green-100 text-green-700"
-                : "bg-yellow-100 text-yellow-700"
-            }`}
-          >
-            {status}
+          <span>
+            <StatusBadge status={status} />
           </span>
         );
       },

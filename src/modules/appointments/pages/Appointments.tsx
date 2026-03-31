@@ -28,14 +28,13 @@ function AppointmentsPage() {
       <section className="space-y-6">
         <h1 className="font-medium">Appointments Management</h1>
 
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           {/* Total Applications */}
           <Card className="flex-1 w-full">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-medium">
                 Total Appointments
               </CardTitle>
-              <FileText className="h-5 w-5 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold">{appointments.length}</p>
@@ -45,22 +44,28 @@ function AppointmentsPage() {
           {/* Approved */}
           <Card className="flex-1">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm font-medium">Approved</CardTitle>
-              <CheckCircle className="h-5 w-5 text-green-500" />
+              <CardTitle className="text-sm font-medium">Purchased</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "CONFIRMED").length}</p>
+              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "ISPURCHASED").length}</p>
             </CardContent>
           </Card>
 
           {/* Pending */}
           <Card className="flex-1">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm font-medium">Pending</CardTitle>
-              <Clock className="h-5 w-5 text-yellow-500" />
+              <CardTitle className="text-sm font-medium">Visited</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "PENDING").length}</p>
+              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "ISVISITED").length}</p>
+            </CardContent>
+          </Card>
+          <Card className="flex-1">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-sm font-medium">Not Visited</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "NOTVISITED").length}</p>
             </CardContent>
           </Card>
         </div>

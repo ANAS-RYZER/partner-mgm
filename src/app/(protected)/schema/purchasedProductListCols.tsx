@@ -17,13 +17,13 @@ export const productColumns: ColumnDef<PurchasedProduct>[] = [
     header: "Product Type",
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
-        <Image
+        {/* <Image
           src={row.original.image}
           alt={row.original.name || "Product Image"}
           width={48}
           height={48}
           className="rounded object-cover"
-        />
+        /> */}
         <span className="font-medium text-[#9c7a3a]">{row.original.type}</span>
       </div>
     ),

@@ -5,15 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
+import StatusBadge from "@/components/ui/statusbadge";
 
 export type AppointmentRow = {
   _id: string;
-  applicantName: string;
+  userName: string;
   email: string;
   date: string;
   slotStartTime?: string;
   slotEndTime?: string;
-  noofOrders?: number;
+  productCount?: number;
   status: "CONFIRMED" | "PENDING" | "CANCELLED";
 };
 
@@ -36,7 +37,7 @@ export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
       header: "Customer Details",
       accessorKey: "profile",
       cell: ({ row }) => {
-        return <div className="flex flex-col"><span className="font-medium">{row.original.applicantName || "-"}</span>
+        return <div className="flex flex-col"><span className="font-medium">{row.original.userName || "-"}</span>
         <span className="text-xs">{row.original.email || "-"}</span></div>;
       },
     },
@@ -62,11 +63,11 @@ export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
     },
 
     {
-      header: "no of orders",
-      accessorKey: "noofOrders",
+      header: "No of Products",
+      accessorKey: "productCount",
       cell: ({ row }) => (
         <span>
-         {row.original.noofOrders ?? "-"}
+         {row.original.productCount ?? "-"}
         </span>
       ),
     },
@@ -77,14 +78,8 @@ export const useAppointmentListCols = (): ColumnDef<AppointmentRow>[] => {
       cell: ({ row }) => {
         const status = row.original.status;
         return (
-          <span
-            className={`px-2 py-1 rounded text-xs font-medium ${
-              status === "CONFIRMED"
-                ? "bg-green-100 text-green-700"
-                : "bg-yellow-100 text-yellow-700"
-            }`}
-          >
-            {status}
+          <span>
+            <StatusBadge status={status} />
           </span>
         );
       },
