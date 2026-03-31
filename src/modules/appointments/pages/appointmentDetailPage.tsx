@@ -24,9 +24,9 @@ function AppointmentDetailPage() {
 
   const cols = productColumns;
   const purchasedProducts = products.map((product) => ({
-    type: product?.goldSpecs?.metal === "gold" ? "Gold" : "Jewelry",
+    type: "Gold",
     name: product?.name ?? "-",
-    image: product?.image ?? product?.gallery?.[0] ?? "",
+    image: product?.image ?? "",
     date: product.date,
     amount: product?.amount ?? "-",
     status: product?.status ?? "-",
