@@ -1,79 +1,44 @@
 "use client";
 import React from "react";
 import TableComponent from "@/components/TableComponent";
-import { LoaderCircle, Search } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, CheckCircle, Clock } from "lucide-react";
+import { CalendarCheck2, Check, CheckCircle, CheckCircle2, CircleCheck, CircleCheckIcon, LoaderCircle, MapPin, Search, ShoppingCart, XIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useAppointmentListCols } from "@/app/(protected)/schema/appointmentListCols";
 import useGetAppointments from "@/modules/appointments/hooks/useGetAppointments";
+import { useGetAppointmentKpi } from "../hooks/useGetAppointmentKpi";
+import DashboardCard from "@/components/DashboardCard";
+import { useDebounce } from "@/hooks/useDebounce";
 
 function AppointmentsPage() {
   const [searchTerm, setSearchTerm] = useState("");
-
-  const {data, isLoading, error } = useGetAppointments();
-
-  const appointments = data?.data ?? [];
-
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const { data, isFetching: isFetchingAppointments, error } = useGetAppointments(debouncedSearchTerm);
+  const { data: appointmentKpi, isFetching: isAppointmentKpiLoading } = useGetAppointmentKpi();
+  const appointments = data ?? [];
   const cols = useAppointmentListCols();
-
-
-    const filteredCustomers = appointments.filter((c:any) =>
-        (c.applicantName ?? "").toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  if (isFetchingAppointments && isAppointmentKpiLoading) {
+    return <div className="flex items-center justify-center p-10">
+      <LoaderCircle size={50} className="animate-spin text-gold" />
+    </div>
+  }
   return (
     <>
       <section className="space-y-6">
-        <h1 className="font-medium">Appointments Management</h1>
+        <h1 className="font-semibold text-2xl">Appointments Management</h1>
 
-        <div className="flex gap-2">
-          {/* Total Applications */}
-          <Card className="flex-1 w-full">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm font-medium">
-                Total Appointments
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">{appointments.length}</p>
-            </CardContent>
-          </Card>
-
-          {/* Approved */}
-          <Card className="flex-1">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm font-medium">Purchased</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "ISPURCHASED").length}</p>
-            </CardContent>
-          </Card>
-
-          {/* Pending */}
-          <Card className="flex-1">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm font-medium">Visited</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "ISVISITED").length}</p>
-            </CardContent>
-          </Card>
-          <Card className="flex-1">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm font-medium">Not Visited</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold">{appointments.filter((a: any) => a.status === "NOTVISITED").length}</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-5 gap-2">
+          <DashboardCard title="Total Appointments" value={appointmentKpi?.total || "0"} rightIcon={<CalendarCheck2 size={20} />} rightIconClassName="text-gray-500 rounded-full p-2 bg-gray-50" />
+          <DashboardCard title="Purchased" value={appointmentKpi?.isPurchased || "0"} rightIcon={<ShoppingCart size={20} />} rightIconClassName="text-green-500 rounded-full p-2 bg-green-50" />
+          <DashboardCard title="Visited" value={appointmentKpi?.isVisited || "0"} rightIcon={<MapPin size={20} />} rightIconClassName="text-yellow-500 rounded-full p-2 bg-yellow-50" />
+          <DashboardCard title="Confirmed" value={appointmentKpi?.confirmed || "0"} rightIcon={<CheckCircle size={20} />} rightIconClassName="text-blue-500 rounded-full p-2 bg-blue-50" />
+          <DashboardCard title="Not Visited" value={appointmentKpi?.notVisited || "0"} rightIcon={<XIcon size={20} />} rightIconClassName="text-red-500 rounded-full p-2 bg-red-50" />
         </div>
 
         <div className="relative flex-1 ">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground " />
           <Input
-            placeholder="Search applications..."
+            placeholder="Search by name or email... "
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 pr-4 py-5 w-full bg-white"
@@ -81,15 +46,15 @@ function AppointmentsPage() {
         </div>
 
         <div className="rounded-xl bg-background">
-          {isLoading ? (
+          {isFetchingAppointments ? (
             <div className="flex items-center justify-center p-10">
               <LoaderCircle size={50} className="animate-spin text-gold" />
             </div>
           ) : error ? (
             <div className="p-10 text-red-500">Failed to load appointments</div>
           ) : (
-          <TableComponent columns={cols} data={filteredCustomers} model="Appointment" />
-           )} 
+            <TableComponent columns={cols} data={appointments} model="Appointment" />
+          )}
         </div>
       </section>
     </>
