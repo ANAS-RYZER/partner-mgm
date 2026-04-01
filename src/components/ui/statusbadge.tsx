@@ -14,7 +14,7 @@ const StatusBadge = ({status}: {status: string}) => {
         NOTVISITED: "Not Visited",
     }
   return (
-    <div className={`text-center py-1 rounded-md text-xs font-medium ${
+    <div className={`text-center py-1 rounded-full text-xs font-medium px-2 max-w-28 ${
       statusStyles[status]
     }`}>
       {statusText[status]}

@@ -1,6 +1,6 @@
+import IdShorterComponent from "@/components/IdShorterComponent";
 import { Button } from "@/components/ui/button";
-import { Eye, Link } from "lucide-react";
-import Image from "next/image";
+import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export const applicationListCols = () => {
@@ -12,30 +12,24 @@ export const applicationListCols = () => {
         const agentId = row.original._id;
         return (
           <span className="font-mono text-xs">
-            {agentId ? `CUST-${agentId.slice(-3).toUpperCase()}` : "-"}
+            <IdShorterComponent id={agentId} model="CUST" />
           </span>
         );
       },
     },
-
     {
       header: "Profile",
       accessorKey: "avatar",
       cell: ({ row }: { row: any }) => {
-        const profile = row.original.avatar;
         const name = row.original.fullName;
-        console.log(profile);
 
         return (
           <div className="flex items-center gap-3">
-           
-            {/* <Image src={profile} alt={name || "Profile"} width={40} height={40} className="rounded-full object-cover" /> */}
             <span className="font-medium text-sm ">{name || "-"}</span>
           </div>
         );
       },
     },
-
     {
       header: "Email",
       accessorKey: "email",

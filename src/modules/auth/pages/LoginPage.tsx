@@ -55,6 +55,7 @@ const LoginPage = () => {
         toast.success("Login successful!");
         sessionStorage.setItem("accessToken", data.accessToken);
         sessionStorage.setItem("refreshToken", data.refreshToken);
+        sessionStorage.setItem("sessionId", data.sessionId);
         setAuth({
           email: data.user.email,
           userId: data.user.userId,

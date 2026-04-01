@@ -1,36 +1,29 @@
 "use client";
-import { products } from "@/app/(protected)/schema/applications";
-import { productColumns } from "@/app/(protected)/schema/purchasedProductListCols";
+import { PurchasedProductListCols } from "@/modules/appointments/schema/purchasedProductListCols";
 import AppointmentDetails from "@/modules/appointments/components/AppointmentDetails";
 import TableComponent from "@/components/TableComponent";
-import { ArrowLeft, Table } from "lucide-react";
-import { useRouter } from "next/navigation";
- 
+import { ArrowLeft, LoaderCircle } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useGetAppointmentDetail } from "../hooks/useGetAppointmentDetail";
+
 
 function AppointmentDetailPage() {
   const router = useRouter();
+  const { appointmentId } = useParams<{ appointmentId: string }>();
+  const { data: appointmentDetail, isFetching: isFetchingAppointmentDetail, error: errorAppointmentDetail } = useGetAppointmentDetail(appointmentId as string);
 
-   const appointmentData = {
-    appointmentId: 'APPT-548',
-    date: '2026-02-18',
-    time: '14:00 - 17:00',
-    customerId: 'CUST-995',
-    customerName: 'Rajesh.Ande',
-    email: 'anderajesh15@gmail.com',
-    phoneNumber: '',
-    noOfOrders: 2,
-    status: 'CONFIRMED' as const,
-  };
 
-  const cols = productColumns;
-  const purchasedProducts = products.map((product) => ({
-    type: "Gold",
-    name: product?.name ?? "-",
-    image: product?.image ?? "",
-    date: product.date,
-    amount: product?.amount ?? "-",
-    status: product?.status ?? "-",
-  }));
+  //Loading state
+  if (isFetchingAppointmentDetail) {
+    return <div className="flex items-center justify-center p-10 h-96">
+      <LoaderCircle size={50} className="animate-spin text-gold" />
+    </div>
+  }
+  if (errorAppointmentDetail) {
+    return <div className="flex items-center justify-center p-10 h-96">
+      <p className="text-red-500">Error fetching appointment detail</p>
+    </div>
+  }
   return (
     <>
       <div className=" p-6 space-y-6 bg-primary">
@@ -38,28 +31,18 @@ function AppointmentDetailPage() {
           <ArrowLeft className="cursor-pointer " onClick={() => router.back()} />{" "}
           Appointment Details
         </div>
-        <AppointmentDetails 
-        data={appointmentData}/>
-        <div>
-            <h1>Orders</h1>
-           
-        </div>
-         <div className="rounded-xl bg-background">
-          {/* {isLoading ? (
-            <div className="flex items-center justify-center p-10">
-              <LoaderCircle size={50} className="animate-spin text-gold" />
-            </div>
-          ) : error ? (
-            <div className="p-10 text-red-500">
-              Failed to load customer details
-            </div>
-          ) : ( */}
-            <TableComponent
-              columns={cols}
-              data={purchasedProducts}
-              model="Product"
-            />
-          {/* )} */}
+        <AppointmentDetails
+          data={appointmentDetail} />
+
+        <p className="text-lg font-semibold">Product List</p>
+
+        {/* Purchased Products */}
+        <div className="rounded-xl bg-background">
+          <TableComponent
+            columns={PurchasedProductListCols}
+            data={appointmentDetail?.products}
+            model="Product"
+          />
         </div>
       </div>
     </>
