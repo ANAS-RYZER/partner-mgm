@@ -7,7 +7,7 @@ export const useGetCustomerDetails = (customerId: string) => {
     return useQuery({
         queryKey: ["customerDetails", customerId],
         queryFn: async () => {
-            const res = await api.get(`/agent-dashboard/user/${customerId}`);
+            const res = await api.get(`/agent-dashboard/customer/${customerId}`);
             console.log("customer details response", res);
             return res.data;
         },

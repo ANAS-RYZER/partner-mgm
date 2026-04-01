@@ -1,22 +1,45 @@
 "use client";
 import React from "react";
 import TableComponent from "@/components/TableComponent";
-import { CalendarCheck2, Check, CheckCircle, CheckCircle2, CircleCheck, CircleCheckIcon, LoaderCircle, MapPin, Search, ShoppingCart, XIcon } from "lucide-react";
+import { CalendarCheck2, CheckCircle, LoaderCircle, MapPin, Search, ShoppingCart, XIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useAppointmentListCols } from "@/app/(protected)/schema/appointmentListCols";
+import { AppointmentListCols } from "@/modules/appointments/schema/AppointmentListCols";
 import useGetAppointments from "@/modules/appointments/hooks/useGetAppointments";
 import { useGetAppointmentKpi } from "../hooks/useGetAppointmentKpi";
 import DashboardCard from "@/components/DashboardCard";
 import { useDebounce } from "@/hooks/useDebounce";
+import clsx from "clsx";
+import { useRouter } from "next/navigation";
+import Pagination from "@/components/Pagination";
+
+const APPOINTMENT_STATUSES = [
+  { label: "All", value: undefined },
+  { label: "Confirmed", value: "CONFIRMED" },
+  { label: "Purchased", value: "ISPURCHASED" },
+  { label: "Visited", value: "ISVISITED" },
+  { label: "Not Visited", value: "NOTVISITED" },
+];
 
 function AppointmentsPage() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState<string | undefined>(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const { data, isFetching: isFetchingAppointments, error } = useGetAppointments(debouncedSearchTerm);
+  const { data, isFetching: isFetchingAppointments } = useGetAppointments(
+    debouncedSearchTerm,
+    status,
+    currentPage,
+    limit
+  );
   const { data: appointmentKpi, isFetching: isAppointmentKpiLoading } = useGetAppointmentKpi();
-  const appointments = data ?? [];
-  const cols = useAppointmentListCols();
+  const appointments = data?.data ?? [];
+  const totalPages = data?.totalPages || 1;
+  const currentPageNumber = data?.page || currentPage;
+  const currentLimit = data?.limit || limit;
   if (isFetchingAppointments && isAppointmentKpiLoading) {
     return <div className="flex items-center justify-center p-10">
       <LoaderCircle size={50} className="animate-spin text-gold" />
@@ -24,9 +47,11 @@ function AppointmentsPage() {
   }
   return (
     <>
-      <section className="space-y-6">
+      <div className="space-y-6">
+        {/* Header */}
         <h1 className="font-semibold text-2xl">Appointments Management</h1>
 
+        {/* KPIs */}
         <div className="grid grid-cols-5 gap-2">
           <DashboardCard title="Total Appointments" value={appointmentKpi?.total || "0"} rightIcon={<CalendarCheck2 size={20} />} rightIconClassName="text-gray-500 rounded-full p-2 bg-gray-50" />
           <DashboardCard title="Purchased" value={appointmentKpi?.isPurchased || "0"} rightIcon={<ShoppingCart size={20} />} rightIconClassName="text-green-500 rounded-full p-2 bg-green-50" />
@@ -35,28 +60,86 @@ function AppointmentsPage() {
           <DashboardCard title="Not Visited" value={appointmentKpi?.notVisited || "0"} rightIcon={<XIcon size={20} />} rightIconClassName="text-red-500 rounded-full p-2 bg-red-50" />
         </div>
 
-        <div className="relative flex-1 ">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground " />
-          <Input
-            placeholder="Search by name or email... "
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-5 w-full bg-white"
-          />
+        {/* Table Header */}
+        <p className="text-lg font-semibold">Appointments List</p>
+
+        {/* Search */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1 ">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground " />
+            <Input
+              placeholder="Search by name or email... "
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="pl-10 pr-4 py-5 w-full bg-white"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            {APPOINTMENT_STATUSES.map((item) => {
+              const isActive = status === item.value;
+              return (
+                <Button
+                  key={item.label}
+                  onClick={() => {
+                    setStatus(item.value);
+                    setCurrentPage(1);
+                  }}
+                  className={clsx(
+                    "px-4 py-0! text-xs font-medium rounded-full border transition-all",
+                    isActive
+                      ? "bg-gold text-white border-gold shadow-sm hover:bg-gold"
+                      : "bg-white text-muted-foreground border-gray-200 hover:border-gold! hover:text-white! hover:bg-gold",
+                  )}
+                >
+                  {item.label}
+                </Button>
+              );
+            })}
+
+            {(searchTerm || status) && (
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setSearchTerm("");
+                  setStatus(undefined);
+                  setCurrentPage(1);
+                }}
+                className="flex items-center gap-2 rounded-md px-3 py-2"
+              >
+                <XIcon size={16} />
+                Clear
+              </Button>
+            )}
+          </div>
         </div>
 
+
+        {/* Table */}
         <div className="rounded-xl bg-background">
           {isFetchingAppointments ? (
             <div className="flex items-center justify-center p-10">
               <LoaderCircle size={50} className="animate-spin text-gold" />
             </div>
-          ) : error ? (
-            <div className="p-10 text-red-500">Failed to load appointments</div>
           ) : (
-            <TableComponent columns={cols} data={appointments} model="Appointment" />
+            <TableComponent columns={AppointmentListCols(router)} data={appointments} model="Appointment" />
           )}
         </div>
-      </section>
+        <Pagination
+          currentPage={currentPageNumber}
+          totalPages={totalPages}
+          hasPreviousPage={currentPageNumber > 1}
+          hasNextPage={currentPageNumber < totalPages}
+          limit={currentLimit}
+          onPageChange={(page) => setCurrentPage(page)}
+          onPageSizeChange={(newLimit) => {
+            setLimit(newLimit);
+            setCurrentPage(1);
+          }}
+        />
+      </div>
     </>
   );
 }

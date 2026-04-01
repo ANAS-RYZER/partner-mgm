@@ -1,30 +1,17 @@
 "use client";
 import CustomerHeader from "@/modules/customers/components/CustomerHeader";
 import TableComponent from "@/components/TableComponent";
-import { ArrowBigLeft, ArrowLeft, LoaderCircle } from "lucide-react";
+import { ArrowLeft, LoaderCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { use, useState } from "react";
 
-import { useCustomerAppointmentsListCols } from "@/app/(protected)/schema/userAppointmentListCols";
-import { productColumns, PurchasedProduct } from "@/app/(protected)/schema/purchasedProductListCols";
+import { CustomerAppointmentListCols } from "@/modules/customers/schema/userAppointmentListCols";
 import { useGetCustomerAppointmentDetails } from "../hooks/useGetCustomerAppointments";
 import { useGetCustomerDetails } from "../hooks/useGetCustomerDetails";
-
-type Appointment = {
-  date: string;
-  productIds?: Product[];
-};
+import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
+import { useCustomerOrder } from "../hooks/useCustomerOrder";
+import { ProductListCols } from "../schema/ProductListCols";
 
 
-type Product = {
-  name: string;
-  image?: string;
-  gallery?: string[];
-  mrpPrice: number;
-  goldSpecs?: {
-    metal?: string;
-  };
-};
 
 export default function CustomerDetailsPage() {
   const params = useParams<{ customerId: string }>();
@@ -32,50 +19,29 @@ export default function CustomerDetailsPage() {
 
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<"appointments" | "products">(
-    "appointments",
-  );
 
-  const { data, isFetching, error } = useGetCustomerAppointmentDetails(
-    customerId as string,
-  );
+  //hooks
+  const { data: appointments, isFetching } = useGetCustomerAppointmentDetails(customerId);
+  const { data: customerDetails, isFetching: isCustomerDetailsFetching } = useGetCustomerDetails(customerId);
+  const { data: customerOrders, isFetching: isCustomerOrdersFetching } = useCustomerOrder(customerId);
+  console.log("customerOrders", customerOrders);
 
-  const { data: customerDetails , isFetching: isCustomerDetailsFetching } = useGetCustomerDetails(customerId as string);
-
-  const cols = productColumns;
-
-  const appointmentColumns = useCustomerAppointmentsListCols();
-
- const purchasedProducts: PurchasedProduct[] =
-  data?.appointments?.flatMap((appointment: Appointment) =>
-    appointment.productIds?.map((product) => ({
-      type: product?.goldSpecs?.metal === "gold" ? "Gold" : "Jewelry",
-      name: product?.name ?? "-",
-      image: product?.image ?? product?.gallery?.[0] ?? "",
-      date: appointment.date,
-      amount: product?.mrpPrice
-        ? product.mrpPrice.toLocaleString()
-        : "0",
-    })) ?? []
-  ) ?? [];
-
-const appointmentRows =
-  data?.appointments?.map((appointment : any) => ({
-    userId: appointment.userId,
-    applicantName: customerDetails?.user?.fullName ?? "-",
-    email: customerDetails?.user?.email ?? "-",
-    date: appointment.date,
-    slotStartTime: appointment.slotStartTime,
-    slotEndTime: appointment.slotEndTime,
-    status: appointment.status,
-    noOfOrders: appointment.productIds?.length ?? 0,
-  })) ?? [];
-
-  if (isFetching && isCustomerDetailsFetching ) {
+  //Loading state
+  if (isCustomerDetailsFetching  && (isFetching || isCustomerOrdersFetching)) {
     return <div className="flex items-center justify-center p-10 h-96">
       <LoaderCircle size={50} className="animate-spin text-gold" />
     </div>
   }
+
+  const customerPayload = customerDetails?.data ?? customerDetails ?? {};
+  const customerHeaderData = {
+    name: customerPayload?.name ?? customerPayload?.fullName ?? "-",
+    customerId: customerPayload?.customerId ?? customerPayload?._id ?? "",
+    email: customerPayload?.email ?? "-",
+    createdDate:
+      customerPayload?.createdDate ??
+      "",
+  };
 
   return (
     <>
@@ -84,63 +50,28 @@ const appointmentRows =
           <ArrowLeft className="cursor-pointer" onClick={() => router.back()} />{" "}
           Customer Details
         </div>
-        <CustomerHeader
-          // avatar={customerDetails?.user?.avatar ?? ""}
-          name={customerDetails?.user?.fullName ?? "-"}
-          customerId={customerDetails?.user?._id ?? "-"}
-          email={customerDetails?.user?.email ?? "-"}
-          createdAt={
-            customerDetails?.user?.createdAt
-              ? new Date(customerDetails.user.createdAt).toLocaleDateString()
-              : "-"
-          }
-        />
-
-        <div className="flex gap-10">
-          <h1
-            onClick={() => setActiveTab("appointments")}
-            className={`font-medium text-lg cursor-pointer ${
-              activeTab === "appointments"
-                ? "text-gold border-b-2 border-gold"
-                : ""
-            }`}
-          >
-            Appointments
-          </h1>
-
-          <h1
-            onClick={() => setActiveTab("products")}
-            className={`font-medium text-lg cursor-pointer ${
-              activeTab === "products" ? "text-gold border-b-2 border-gold" : ""
-            }`}
-          >
-            Purchased Products
-          </h1>
-        </div>
-
-        <div className="rounded-xl bg-background">
-          {isFetching ? (
-            <div className="flex items-center justify-center p-10">
-              <LoaderCircle size={50} className="animate-spin text-gold" />
-            </div>
-          ) : error ? (
-            <div className="p-10 text-red-500">
-              Failed to load customer details
-            </div>
-          ) : activeTab === "appointments" ? (
+        <CustomerHeader appointmentDetails={customerHeaderData} />
+        {/* Tabs */}
+        <Tabs defaultValue="appointments" className="">
+          <TabsList className=" rounded-full p-1 gap-2 bg-white">
+            <TabsTrigger className="font-medium bg-none data-[state=active]:bg-gold data-[state=active]:text-white cursor-pointer rounded-full" value="appointments">Appointments</TabsTrigger>
+            <TabsTrigger className="font-medium bg-none data-[state=active]:bg-gold data-[state=active]:text-white cursor-pointer rounded-full" value="products">Purchased Products</TabsTrigger>
+          </TabsList>
+          <TabsContent value="appointments">
             <TableComponent
-              columns={appointmentColumns}
-              data={appointmentRows}
+              columns={CustomerAppointmentListCols(router)}
+              data={appointments?.data}
               model="Appointment"
             />
-          ) : (
+          </TabsContent>
+          <TabsContent value="products">
             <TableComponent
-              columns={cols}
-              data={purchasedProducts}
+              columns={ProductListCols}
+              data={customerOrders?.data}
               model="Product"
             />
-          )}
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   );

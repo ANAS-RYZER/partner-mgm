@@ -57,7 +57,7 @@ api.interceptors.response.use(
           return Promise.reject({ message: "No refresh token" });
         }
 
-        const { data } = await axios.post(`${BASE_URL}/admin/refresh-token`, {
+        const { data } = await axios.post(`${BASE_URL}/agent/refresh-token`, {
           refreshToken,
         });
 

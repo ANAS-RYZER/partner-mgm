@@ -7,8 +7,7 @@ export const useGetCustomerAppointmentDetails = (customerId: string) => {
     return useQuery({
         queryKey: ["customerAppointments", customerId],
         queryFn: async () => {
-            const res = await api.get(`/agent-dashboard/user/${customerId}/appointments`);
-            console.log("customer appointments response", res);
+            const res = await api.get(`/agent-dashboard/customer/${customerId}/appointments`);
             return res.data;
         },
         refetchOnWindowFocus: false,

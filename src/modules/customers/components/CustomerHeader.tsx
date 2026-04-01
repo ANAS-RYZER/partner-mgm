@@ -1,38 +1,27 @@
+import { formatDate } from "@/lib/formatDate";
 import { Calendar, Mail } from "lucide-react";
-import Image from "next/image";
 
 interface CustomerHeaderProps {
-  name: string;
-  customerId: string;
-  email: string;
-  createdAt: string;
-  avatar?: string;
+  appointmentDetails?: AppointmentDetails;
 }
 
+interface AppointmentDetails {
+  name?: string;
+  customerId?: string;
+  email?: string;
+  createdDate?: string;
+}
 export default function CustomerHeader({
-  avatar,
-  name,
-  customerId,
-  email,
-  createdAt,
+  appointmentDetails,
 }: CustomerHeaderProps) {
+  const { name, customerId, email, createdDate } = appointmentDetails ?? {};
   return (
     <div className="rounded-xl bg-white shadow-md">
       <div className="flex items-center justify-between px-4 py-4">
         <div className="flex items-center gap-4">
-          {avatar ? (
-            <Image
-              src={avatar}
-              alt="Customer Avatar"
-               width={40}
-               height={40}
-              className="h-14 w-14 rounded-full object-cover"
-            />
-          ) : (
-            <div className="h-14 w-14 rounded-full bg-[#e8d3a1] flex items-center justify-center text-xl font-semibold">
-             {name?.charAt(0) || "?"}
-            </div>
-          )}
+          <div className="h-14 w-14 rounded-full bg-[#e8d3a1] flex items-center justify-center text-xl font-semibold">
+            {name?.charAt(0) || "?"}
+          </div>
 
           <div>
             <h2 className="text-xl font-medium">{name}</h2>
@@ -51,9 +40,9 @@ export default function CustomerHeader({
           <div className="flex items-center gap-2 text-black  text-md">
             Account Created :
           </div>
-         <div className="flex items-center gap-2 text-md text-black">
-          {createdAt}
-         </div>
+          <div className="flex items-center gap-2 text-md text-black">
+            {createdDate ? formatDate(createdDate) : "-"}
+          </div>
         </div>
       </div>
     </div>
