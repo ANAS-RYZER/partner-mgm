@@ -17,8 +17,5 @@ export const useCustomers = (
         throw new Error(error?.response?.data?.message || "Failed to fetch customers");
       }
     },
-    refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 2, 
   });
 };

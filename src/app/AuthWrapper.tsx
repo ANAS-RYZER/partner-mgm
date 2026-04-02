@@ -11,14 +11,20 @@ export default function AuthWrapper({
   const router = useRouter();
   const { isAuthenticated, hasHydrated } = useAuthStore();
 
+  const hasRefreshToken =
+    typeof window !== "undefined" &&
+    !!sessionStorage.getItem("refreshToken");
+
   useEffect(() => {
     if (!hasHydrated) return;
 
-    if (!isAuthenticated) {
+    // Don't immediately redirect while we still have a refresh token.
+    // An API call (ex: /me) will trigger the interceptor to refresh access.
+    if (!isAuthenticated && !hasRefreshToken) {
       router.replace("/auth/login");
     }
-  }, [hasHydrated, isAuthenticated, router]);
+  }, [hasHydrated, isAuthenticated, hasRefreshToken, router]);
   if (!hasHydrated) return null;
-  if (!isAuthenticated) return null;
+  if (!isAuthenticated && !hasRefreshToken) return null;
   return <>{children}</>;
 }

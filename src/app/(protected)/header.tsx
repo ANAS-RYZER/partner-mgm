@@ -14,7 +14,7 @@ const Header = () => {
   const { data: me } = useGetMe();
   const [copied, setCopied] = useState(false);
 
-  const referralCode = me?.agentId;
+  const referralCode = me?.agent?.agentId;
 
   const handleCopy = async () => {
     if (!referralCode) return;
@@ -39,7 +39,7 @@ const Header = () => {
           <p className="text-sm text-white/60">Partner ID</p>
 
           <div className="flex items-center gap-2">
-            <h1 className="font-semibold text-sm">{referralCode ?? ""}</h1>
+              <h1 className="font-semibold text-sm">{referralCode ?? ""}</h1>
 
             {referralCode && (
               <button

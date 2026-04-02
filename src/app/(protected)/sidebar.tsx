@@ -10,32 +10,31 @@ const sidebar_options = [
 ];
 
 const Sidebar = () => {
-  const pathname= usePathname();
+  const pathname = usePathname();
   return (
     <aside className="w-[15%] min-h-screen bg-mgm text-white p-4">
       <nav>
         <ul>
           {sidebar_options.map((option) => {
 
-            const isActive = pathname === option.link||
+            const isActive = pathname === option.link ||
               pathname.startsWith(`${option.link}/`);
-             return (
-            
-            <li key={option.name} className="mb-2">
-              <Link
-                href={option.link}
-                className={`block px-3 py-2 rounded transition-colors
-                    ${
-                      isActive
-                        ? "bg-mgm text-gold"
-                        : "text-white hover:text-gold"
+            return (
+
+              <li key={option.name} className="mb-2">
+                <Link
+                  href={option.link}
+                  className={`block px-3 py-2 rounded transition-colors
+                    ${isActive
+                      ? "bg-mgm text-gold"
+                      : "text-white hover:text-gold"
                     }
                   `}
-              >
-                {option.name}
-              </Link>
-            </li>
-             );
+                >
+                  {option.name}
+                </Link>
+              </li>
+            );
           })}
 
         </ul>
