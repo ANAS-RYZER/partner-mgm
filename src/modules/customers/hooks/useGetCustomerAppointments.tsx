@@ -7,12 +7,14 @@ export const useGetCustomerAppointmentDetails = (customerId: string) => {
     return useQuery({
         queryKey: ["customerAppointments", customerId],
         queryFn: async () => {
-            const res = await api.get(`/agent-dashboard/customer/${customerId}/appointments`);
-            return res.data;
+            try {
+                const res = await api.get(`/agent-dashboard/customer/${customerId}/appointments`);
+                return res.data;
+            }catch (error: any) {
+                console.error("Error fetching customer appointments:", error);
+                throw new Error(error?.response?.data?.message || "Failed to fetch customer appointments");
+            }
         },
-        refetchOnWindowFocus: false,
-        staleTime: 5 * 60 * 1000, // 5 minutes
-        retry: 2,
-        enabled: !!customerId, // only run if customerId is available
+        enabled: !!customerId,
     });
 }

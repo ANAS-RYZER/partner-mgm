@@ -13,9 +13,16 @@ const api = axios.create({
 
 const getAccessToken = () => sessionStorage.getItem("accessToken");
 const getRefreshToken = () => sessionStorage.getItem("refreshToken");
+const getSessionId = () => sessionStorage.getItem("sessionId");
 
 const setAccessToken = (token: string) =>
   sessionStorage.setItem("accessToken", token);
+
+const setRefreshToken = (token: string) =>
+  sessionStorage.setItem("refreshToken", token);
+
+const setSessionId = (id: string) =>
+  sessionStorage.setItem("sessionId", id);
 
 const clearTokens = () => {
   sessionStorage.removeItem("accessToken");
@@ -52,19 +59,25 @@ api.interceptors.response.use(
 
       try {
         const refreshToken = getRefreshToken();
+        const sessionId = getSessionId();
         if (!refreshToken) {
           logout();
           return Promise.reject({ message: "No refresh token" });
         }
 
-        const { data } = await axios.post(`${BASE_URL}/agent/refresh-token`, {
+        const { data } = await axios.post(`${BASE_URL}/agents/refresh-token`, {
           refreshToken,
+          sessionId,
         });
 
         const newAccessToken = data?.data?.accessToken;
+        const newRefreshToken = data?.data?.refreshToken;
+        const newSessionId = data?.data?.sessionId;
         if (!newAccessToken) throw new Error("No new access token");
 
         setAccessToken(newAccessToken);
+        setRefreshToken(newRefreshToken);
+        setSessionId(newSessionId);
 
         // Update request & retry
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

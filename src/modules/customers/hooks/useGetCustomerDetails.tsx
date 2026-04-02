@@ -6,14 +6,15 @@ import { useQuery } from "@tanstack/react-query";
 export const useGetCustomerDetails = (customerId: string) => {
     return useQuery({
         queryKey: ["customerDetails", customerId],
-        queryFn: async () => {
-            const res = await api.get(`/agent-dashboard/customer/${customerId}`);
-            console.log("customer details response", res);
-            return res.data;
+        queryFn: async () => {  
+            try {
+                const res = await api.get(`/agent-dashboard/customer/${customerId}`);
+                return res.data;
+            }catch (error: any) {
+                console.error("Error fetching customer details:", error);
+                throw new Error(error?.response?.data?.message || "Failed to fetch customer details");
+            }
         },
-        refetchOnWindowFocus: false,
-        staleTime: 5 * 60 * 1000, // 5 minutes
-        retry: 2,
-        enabled: !!customerId, // only run if customerId is available
+        enabled: !!customerId,
     });
 }
