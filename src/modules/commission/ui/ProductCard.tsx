@@ -1,0 +1,32 @@
+import Image from "next/image";
+import React from "react";
+
+interface ProductCardProps {
+    image: string;
+    name: string;
+    sku: string;
+    price?: number;
+}
+
+const ProductCard = ({ image, name, sku, price }: ProductCardProps) => {
+    return (
+        <div className="border rounded-lg shadow-sm p-3 bg-white">
+           <div className="w-50 h-50 rounded mb-3">
+            <Image src={image} alt={name} width={200} height={200} objectFit="cover" />
+           </div>
+            <h1 className="text-xl font-medium ml-3 line-clamp-2">{name}</h1>
+            <p className=" text-xs text-muted-foreground ml-3 mt-1">
+                sku-id: <span className="text-black uppercase">{sku}</span>
+            </p>
+            {
+                price && (
+                    <p className=" text-xs text-muted-foreground ml-3 mt-1">
+                        Price: <span className="text-black">₹{price}</span>
+                    </p>
+                )
+            }
+        </div>
+    );
+};
+
+export default ProductCard;

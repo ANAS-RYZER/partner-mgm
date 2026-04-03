@@ -4,7 +4,8 @@ import { formatCurrency } from "@/lib/formatcurrency";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type PurchasedProduct = {
-  productName : string;
+  _id?: string;
+  productName: string;
   productType: string;
   productPrice: number;
   appointmentDate: string;

@@ -1,6 +1,5 @@
 import AuthWrapper from "../AuthWrapper";
-import Header from "./header";
-import Sidebar from "./sidebar";
+import AppShell from "./app-shell";
 
 export default function DashBoardLayout({
   children,
@@ -8,14 +7,8 @@ export default function DashBoardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <AuthWrapper>
-      <Header />
-      <div className="min-h-screen w-full flex">
-        <Sidebar />
-        <main className="flex-1">{children}</main>
-      </div>
-      </AuthWrapper>
-    </>
+    <AuthWrapper>
+      <AppShell>{children}</AppShell>
+    </AuthWrapper>
   );
 }

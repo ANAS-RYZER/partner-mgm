@@ -1,6 +1,6 @@
 import React from 'react'
 
-const StatusBadge = ({status}: {status: string}) => {
+const StatusBadge = ({status}: {status: string | undefined}) => {
     const statusStyles: Record<string, string> = {
         ISPURCHASED: "bg-green-100 text-green-700 border border-green-300",
         ISVISITED: "bg-yellow-100 text-yellow-700 border border-yellow-300",
@@ -15,9 +15,9 @@ const StatusBadge = ({status}: {status: string}) => {
     }
   return (
     <div className={`text-center py-1 rounded-full text-xs font-medium px-2 max-w-28 ${
-      statusStyles[status]
+      status ? statusStyles[status] : "bg-gray-100 text-gray-700 border border-gray-300"
     }`}>
-      {statusText[status]}
+      {status ? statusText[status] : "N/A"}
     </div>
   )
 }
