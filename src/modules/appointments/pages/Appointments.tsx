@@ -120,13 +120,21 @@ function AppointmentsPage() {
           </div>
         </div>
         <div className="block space-y-3 md:hidden">
-          {appointments.length === 0 ? (
-            <p className="py-4 text-sm text-muted-foreground">No appointments found.</p>
+        {
+          isFetchingAppointments ? (
+            <div className="flex items-center justify-center p-10">
+              <LoaderCircle size={50} className="animate-spin text-gold" />
+            </div>
           ) : (
-            appointments.map((apt) => (
-              <AppointmentCard key={apt._id} data={apt} />
-            ))
-          )}
+            appointments.length === 0 ? (
+              <p className="py-4 text-sm text-muted-foreground">No appointments found.</p>
+            ) : (
+              appointments.map((apt) => (
+                <AppointmentCard key={apt._id} data={apt} />
+              ))
+            )
+          )
+        }
         </div>
 
         {/* Table */}

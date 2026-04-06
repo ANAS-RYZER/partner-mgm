@@ -86,16 +86,19 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center w-screen justify-center bg-mgm text-white  ">
-      <div className="bg-gold rounded-full p-3 mb-2">
+    <div className="min-h-screen w-full bg-mgm text-white">
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-8 sm:px-6 md:max-w-lg">
+      <div className="bg-gold rounded-full p-3 mb-2 self-center">
         <Sparkle size={20} className="text1-gold fill-white" />
       </div>
-      <h1 className="font-semibold text-3xl text1-gold mb-6">Partner Login</h1>
+      <h1 className="mb-6 text-center font-semibold text-2xl text1-gold sm:text-3xl">
+        Partner Login
+      </h1>
 
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full max-w-lg space-y-5 "
+          className="w-full space-y-5 rounded-xl border border-white/10 bg-black/15 p-4 backdrop-blur-sm sm:p-5"
         >
           <InputField
             control={form.control}
@@ -136,7 +139,7 @@ const LoginPage = () => {
           <hr className="bg-black/10 h-0.5" />
           <div>
             <h1 className="font-medium text-white">First Time Login?</h1>
-            <p className="text-muted-foreground text-sm mt-2">
+            <p className="text-muted-foreground text-sm mt-2 leading-5">
               {" "}
               Check your email for credentials sent by the admin. After login,
               you'll verify with OTP and reset your password.
@@ -144,6 +147,7 @@ const LoginPage = () => {
           </div>
         </form>
       </Form>
+      </div>
     </div>
   );
 };
