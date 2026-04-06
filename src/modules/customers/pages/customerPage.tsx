@@ -10,6 +10,8 @@ import { useCustomerKPI } from "../hooks/useCustomerKPI";
 import DashboardCard from "@/components/DashboardCard";
 import { useDebounce } from "@/hooks/useDebounce";
 import Pagination from "@/components/Pagination";
+import { CustomerRow } from "@/modules/commission/ui/CustomerRow";
+import { formatDate } from "@/lib/formatDate";
 
 
 
@@ -33,7 +35,7 @@ const CustomersPage = () => {
   const cols = applicationListCols();
 
   if (isCustomerCountLoading && isCustomersLoading) {
-    return <div className="flex items-center justify-center p-10">
+    return <div className="flex items-center justify-center p-10 mt-20">
       <LoaderCircle size={50} className="animate-spin text-gold" />
     </div>
   }
@@ -43,7 +45,7 @@ const CustomersPage = () => {
       <div className="space-y-4 p-5">
         <h1 className="font-semibold text-2xl">Customer Management</h1>
 
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr))]">
           <DashboardCard title="Total Customers" value={customerCount?.totalCustomers} rightIcon={<UsersIcon size={20} />} rightIconClassName="text-blue-500 rounded-full p-2 bg-blue-50" />
         </div>
 
@@ -66,21 +68,44 @@ const CustomersPage = () => {
 
 
 
-        <div className="rounded-xl bg-background">
-          {isCustomersLoading ? (
-            <div className="flex items-center justify-center p-10">
-              <LoaderCircle size={50} className="animate-spin text-gold" />
+        {isCustomersLoading ? (
+          <div className="flex items-center justify-center p-10">
+            <LoaderCircle size={50} className="animate-spin text-gold" />
+          </div>
+        ) : error ? (
+          <div className="p-10 text-red-500">Failed to load customers</div>
+        ) : (
+          <>
+            <div className="block space-y-3 md:hidden">
+              {customers.length === 0 ? (
+                <p className="py-4 text-sm text-muted-foreground">
+                  No customers found.
+                </p>
+              ) : (
+                customers.map((c: { _id: string; fullName?: string; email?: string; createdAt?: string }) => (
+                  <CustomerRow
+                    key={c._id}
+                    data={{
+                      _id: c._id,
+                      customerName: c.fullName ?? "-",
+                      email: c.email ?? "-",
+                      createdAt: c.createdAt
+                        ? formatDate(c.createdAt)
+                        : "-",
+                    }}
+                  />
+                ))
+              )}
             </div>
-          ) : error ? (
-            <div className="p-10 text-red-500">Failed to load customers</div>
-          ) : (
-            <TableComponent
-              columns={cols}
-              data={customers}
-              model="Customer"
-            />
-          )}
-        </div>
+            <div className="hidden rounded-xl bg-background md:block">
+              <TableComponent
+                columns={cols}
+                data={customers}
+                model="Customer"
+              />
+            </div>
+          </>
+        )}
         {!error && (
           <Pagination
             currentPage={currentPageNumber}

@@ -5,7 +5,10 @@ import { CalendarCheck2, CheckCircle, LoaderCircle, MapPin, Search, ShoppingCart
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { AppointmentListCols } from "@/modules/appointments/schema/AppointmentListCols";
+import {
+  AppointmentListCols,
+  type AppointmentRow,
+} from "@/modules/appointments/schema/AppointmentListCols";
 import useGetAppointments from "@/modules/appointments/hooks/useGetAppointments";
 import { useGetAppointmentKpi } from "../hooks/useGetAppointmentKpi";
 import DashboardCard from "@/components/DashboardCard";
@@ -13,6 +16,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import Pagination from "@/components/Pagination";
+import { AppointmentCard } from "../components/AppointmentCard";
 
 const APPOINTMENT_STATUSES = [
   { label: "All", value: undefined },
@@ -36,12 +40,12 @@ function AppointmentsPage() {
     limit
   );
   const { data: appointmentKpi, isFetching: isAppointmentKpiLoading } = useGetAppointmentKpi();
-  const appointments = data?.data ?? [];
+  const appointments: AppointmentRow[] = data?.data ?? [];
   const totalPages = data?.totalPages || 1;
   const currentPageNumber = data?.page || currentPage;
   const currentLimit = data?.limit || limit;
   if (isFetchingAppointments && isAppointmentKpiLoading) {
-    return <div className="flex items-center justify-center p-10">
+    return <div className="flex items-center justify-center p-10 mt-20">
       <LoaderCircle size={50} className="animate-spin text-gold" />
     </div>
   }
@@ -49,10 +53,10 @@ function AppointmentsPage() {
     <>
       <div className="space-y-6">
         {/* Header */}
-        <h1 className="font-semibold text-2xl">Appointments Management</h1>
+        <h1 className="font-semibold text-xl md:text-2xl">Appointment Management</h1>
 
         {/* KPIs */}
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-5">
           <DashboardCard title="Total Appointments" value={appointmentKpi?.total || "0"} rightIcon={<CalendarCheck2 size={20} />} rightIconClassName="text-gray-500 rounded-full p-2 bg-gray-50" />
           <DashboardCard title="Purchased" value={appointmentKpi?.isPurchased || "0"} rightIcon={<ShoppingCart size={20} />} rightIconClassName="text-green-500 rounded-full p-2 bg-green-50" />
           <DashboardCard title="Visited" value={appointmentKpi?.isVisited || "0"} rightIcon={<MapPin size={20} />} rightIconClassName="text-yellow-500 rounded-full p-2 bg-yellow-50" />
@@ -64,7 +68,7 @@ function AppointmentsPage() {
         <p className="text-lg font-semibold">Appointments List</p>
 
         {/* Search */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row gap-2">
           <div className="relative flex-1 ">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground " />
             <Input
@@ -77,7 +81,7 @@ function AppointmentsPage() {
               className="pl-10 pr-4 py-5 w-full bg-white"
             />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {APPOINTMENT_STATUSES.map((item) => {
               const isActive = status === item.value;
               return (
@@ -115,10 +119,26 @@ function AppointmentsPage() {
             )}
           </div>
         </div>
-
+        <div className="block space-y-3 md:hidden">
+        {
+          isFetchingAppointments ? (
+            <div className="flex items-center justify-center p-10">
+              <LoaderCircle size={50} className="animate-spin text-gold" />
+            </div>
+          ) : (
+            appointments.length === 0 ? (
+              <p className="py-4 text-sm text-muted-foreground">No appointments found.</p>
+            ) : (
+              appointments.map((apt) => (
+                <AppointmentCard key={apt._id} data={apt} />
+              ))
+            )
+          )
+        }
+        </div>
 
         {/* Table */}
-        <div className="rounded-xl bg-background">
+        <div className="hidden rounded-xl bg-background md:block">
           {isFetchingAppointments ? (
             <div className="flex items-center justify-center p-10">
               <LoaderCircle size={50} className="animate-spin text-gold" />

@@ -8,7 +8,7 @@ export const useGetAppointmentDetail = (appointmentId: string) => {
             try {
                 const res = await api.get(`/dashboard/agentappointmentdetails/${appointmentId}`);
                 return res.data;
-            }catch (error: any) {
+            } catch (error: any) {
                 console.error("Error fetching appointment detail:", error);
                 throw new Error(error?.response?.data?.message || "Failed to fetch appointment detail");
             }

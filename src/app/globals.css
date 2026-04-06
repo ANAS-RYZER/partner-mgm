@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* Scan all of src/ from repo root (../../ = project root when this file is src/app/globals.css).
+   Per-path @source globs can miss files on some setups; one tree covers modules + app + components. */
+@source "../../src/**/*.{js,ts,jsx,tsx}";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -13,7 +16,11 @@
   );
   --color-gold: #e4c646;
   --gradient-gold: linear-gradient(135deg, hsl(40 70% 55%), hsl(40 70% 45%));
-  --gradient-gold-hover: linear-gradient(135deg, hsl(40 70% 45%), hsl(40 70% 55%));
+  --gradient-gold-hover: linear-gradient(
+    135deg,
+    hsl(40 70% 45%),
+    hsl(40 70% 55%)
+  );
   --radius: 0.625rem;
   --background: #f2eeea;
   --foreground: oklch(0.145 0 0);

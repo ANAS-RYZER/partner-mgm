@@ -21,61 +21,65 @@ interface Props {
   onEdit?: () => void;
 }
 
-const statusStyles: Record<AppointmentDetails["status"], string> = {
-  CONFIRMED: "bg-green-100 text-green-700",
-  PENDING: "bg-yellow-100 text-yellow-700",
-  CANCELLED: "bg-red-100 text-red-700",
-};
-
-export default function AppointmentDetailsCard({ data, onEdit }: Props) {
+export default function AppointmentDetailsCard({ data }: Props) {
   return (
-    <>
-      <div className="w-full rounded-xl bg-white border border-gray-200 shadow-sm p-6">
-        <div className="flex gap-3 pb-5">
-          <span className="w-35 text-gray-500">Appointment ID :</span>
-          <span className="text-gray-900"><IdShorterComponent id={data.appointmentId} model="APPT" /></span>
-        </div>
-
-        <div className="flex gap-3 pb-5">
-          <span className="w-35 text-gray-500">Date :</span>
-          <span className="text-gray-900">{data.date}</span>
-        </div>
-
-        <div className="flex gap-3 pb-5">
-          <span className="w-35 text-gray-500">Time :</span>
-          <span className="text-gray-900">{data.time}</span>
-        </div>
-
-        <div className="flex gap-3 pb-5">
-          <span className="w-35 text-gray-500">Customer ID :</span>
-          <span className="text-gray-900"><IdShorterComponent id={data.customerId} model="CUST" /></span>
-        </div>
-
-        <div className="flex gap-3 pb-5">
-          <span className="w-35 text-gray-500">Customer Name :</span>
-          <span className="text-gray-900 font-semibold">
-            {data.customerName}
-          </span>
-        </div>
-
-        <div className="flex gap-3 pb-5">
-          <span className="w-35 text-gray-500">Email :</span>
-          <span className="text-gray-900">{data.email}</span>
-        </div>
-
-        <div className="flex gap-3 pb-5">
-          <span className="w-35 text-gray-500">No of Orders :</span>
-          <span className="text-gray-900">{data.numberOfProducts}</span>
-        </div>
-
-        {/* Status */}
-        <div className="flex items-center gap-3 pb-5">
-          <span className="w-35 text-gray-500">Status :</span>
-          <span>
-            <StatusBadge status={data.status} />
-          </span>
-        </div>
+    <div className="w-full rounded-xl bg-white border border-gray-200 shadow-sm p-4 sm:p-6">
+      
+      {/* Title */}
+      <div className="mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+          Appointment Details
+        </h2>
       </div>
-    </>
+
+      {/* Grid Layout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 text-sm">
+        
+        <Detail label="Appointment ID">
+          <IdShorterComponent id={data.appointmentId} model="APPT" />
+        </Detail>
+
+        <Detail label="Date">{data.date}</Detail>
+
+        <Detail label="Time">{data.time}</Detail>
+
+        <Detail label="Customer ID">
+          <IdShorterComponent id={data.customerId} model="CUST" />
+        </Detail>
+
+        <Detail label="Customer Name">
+          <span className="font-medium">{data.customerName}</span>
+        </Detail>
+
+        <Detail label="Email">
+          <span className="break-all">{data.email}</span>
+        </Detail>
+
+        <Detail label="No of Orders">
+          {data.numberOfProducts}
+        </Detail>
+
+        <Detail label="Status">
+          <StatusBadge status={data.status} />
+        </Detail>
+
+      </div>
+    </div>
   );
 }
+
+/* Reusable field component (because repetition is painful) */
+function Detail({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col">
+      <span className="text-gray-500 text-xs mb-1">{label}</span>
+      <span className="text-gray-900">{children}</span>
+    </div>
+  );
+} 
