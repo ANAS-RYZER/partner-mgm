@@ -8,6 +8,7 @@ import { RecentAppointmentsCols } from '../schema/recentAppointmentsCols'
 import { useRouter } from 'next/navigation'
 import { NewCustomersCols } from '../schema/CustomerCols'
 import { useGetDashboard } from '../hooks/useGetDashboard'
+import { formatCurrency } from '@/lib/formatcurrency'
 
 export const DashboardPage = () => {
     const router = useRouter();
@@ -32,7 +33,7 @@ export const DashboardPage = () => {
         <div className='space-y-4 p-5'>
             <h1 className='font-semibold text-2xl'>Welcome Back, {dashboardData?.data?.agentName}.</h1>
             <div className='grid grid-cols-4 gap-2'>
-                <DashboardCard title='Total Earnings' value={dashboardData?.data?.totalEarnings || "0"} rightIcon={<DollarSignIcon size={20} />} rightIconClassName='text-green-500 rounded-full p-2 bg-green-50' />
+                <DashboardCard title='Total Earnings' value={formatCurrency(dashboardData?.data?.totalEarnings || "0")} rightIcon={<DollarSignIcon size={20} />} rightIconClassName='text-green-500 rounded-full p-2 bg-green-50' />
                 <DashboardCard title='Total Customers' value={dashboardData?.data?.totalCustomers || "0"} rightIcon={<UsersIcon size={20} />} rightIconClassName='text-blue-500 rounded-full p-2 bg-blue-50' />
                 <DashboardCard title='Total Appointments' value={dashboardData?.data?.totalAppointments || "0"} rightIcon={<CalendarCheck2Icon size={20} />} rightIconClassName='text-yellow-500 rounded-full p-2 bg-yellow-50' />
                 <DashboardCard title='Visited Rate' value={`${dashboardData?.data?.visitedRate || "0"}%`} rightIcon={<CheckCircleIcon size={20} />} rightIconClassName='text-green-500 rounded-full p-2 bg-green-50' />
